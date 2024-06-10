@@ -1,0 +1,15 @@
+- name: Log in with blank password and set initial admin password
+  expect:
+    command: ssh -o StrictHostKeyChecking=no admin@{{ ansible_host }}
+    responses:
+      "admin.*'s password:": "\n"
+      ".*Enter new password:": "admin\n"
+      ".*Confirm new password:": "admin\n"
+    timeout: 30
+  register: result
+  ignore_errors: true
+  changed_when: "'Confirm new password: *****' in result.stdout"
+  failed_when: false
+
+- debug:
+    msg: "Password for admin user set successfully"
